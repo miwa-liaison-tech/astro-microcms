@@ -12,6 +12,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^14.1.7",
     "astro": "^7.1.6",
     "microcms-js-sdk": "^3.4.0"
   },
