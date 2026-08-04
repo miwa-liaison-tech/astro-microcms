@@ -12,6 +12,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.1.6"
+    "astro": "^7.1.6",
+    "microcms-js-sdk": "^3.4.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.118.0"
   }
 }
