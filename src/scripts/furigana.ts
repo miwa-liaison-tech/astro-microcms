@@ -227,7 +227,7 @@ function initializeFurigana() {
   void Furigana.applyToElements(
     document.querySelectorAll(".js-furigana, .header__nav-link, .nav-menu__link, .footer__copyright"),
   );
-  document.querySelectorAll(".entry__body").forEach((element) => {
+  document.querySelectorAll(".entry__body, .webinar-card__body-content, .webinar-detail__body-content").forEach((element) => {
     void Furigana.applyToTextNodes(element);
   });
 }

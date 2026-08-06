@@ -24,6 +24,16 @@ export interface Product {
   products_category?: MicroCMSField;
 }
 
+export interface Webinar {
+  id: string;
+  title?: string;
+  start?: string;
+  end?: string;
+  event_day?: string;
+  webinar_title?: string;
+  webinar_news_body?: string;
+}
+
 const serviceDomain = import.meta.env.MICROCMS_SERVICE_DOMAIN;
 const apiKey = import.meta.env.MICROCMS_API_KEY;
 
@@ -68,6 +78,24 @@ export async function getProducts(queries?: MicroCMSQueries) {
   return client.getList<Product>({
     endpoint: "products",
     queries: { limit: 100, ...queries },
+  });
+}
+
+export async function getWebinars(queries?: MicroCMSQueries) {
+  if (!client) return emptyList<Webinar>();
+
+  return client.getList<Webinar>({
+    endpoint: "webinar",
+    queries: { limit: 100, ...queries },
+  });
+}
+
+export async function getWebinarDetail(id: string) {
+  if (!client) return null;
+
+  return client.getListDetail<Webinar>({
+    endpoint: "webinar",
+    contentId: id,
   });
 }
 

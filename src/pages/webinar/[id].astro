@@ -1,0 +1,86 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import { getWebinarDetail, getWebinars } from "../../lib/microcms";
+import { formatDate } from "../../lib/date";
+import {
+  formatApplicationPeriod,
+  getApplicationStatus,
+  getWebinarTitle,
+} from "../../lib/webinar";
+
+export async function getStaticPaths() {
+  const response = await getWebinars();
+
+  return response.contents.map((item) => ({
+    params: { id: item.id },
+  }));
+}
+
+const id = Astro.params.id;
+const webinar = id ? await getWebinarDetail(id) : null;
+
+if (!webinar) {
+  throw new Error(`ウェビナーが見つかりません: ${id ?? "unknown"}`);
+}
+
+const title = getWebinarTitle(webinar);
+const eventDate = formatDate(webinar.event_day);
+const period = formatApplicationPeriod(webinar.start, webinar.end);
+const status = getApplicationStatus(webinar.start, webinar.end);
+---
+
+<SiteLayout title={`${title} | ウェビナー | テストサイト`} description={title}>
+  <main>
+    <section class="main-section">
+      <div class="main-section__inner">
+        <article class="webinar-detail">
+          <nav class="webinar-detail__breadcrumb" aria-label="パンくず">
+            <ul class="webinar-detail__breadcrumb-list">
+              <li class="webinar-detail__breadcrumb-item"><a href="/">ホーム</a></li>
+              <li class="webinar-detail__breadcrumb-item"><a href="/webinar/">ウェビナー</a></li>
+              <li class="webinar-detail__breadcrumb-item webinar-detail__breadcrumb-item--current" aria-current="page">{title}</li>
+            </ul>
+          </nav>
+
+          <header class="webinar-detail__header">
+            <h1 class="webinar-detail__title js-furigana">{title}</h1>
+            {webinar.webinar_title && webinar.webinar_title !== webinar.title && (
+              <p class="webinar-detail__name js-furigana">{webinar.webinar_title}</p>
+            )}
+          </header>
+
+          <div class="webinar-detail__schedule">
+            {eventDate && (
+              <div class="webinar-detail__schedule-row">
+                <span class="webinar-detail__schedule-label">開催日</span>
+                <time class="webinar-detail__date" datetime={webinar.event_day}>{eventDate}</time>
+              </div>
+            )}
+            {period && (
+              <div class="webinar-detail__schedule-row">
+                <span class="webinar-detail__schedule-label">応募期間</span>
+                <span class="webinar-detail__period">
+                  {period}
+                  {status && <span class={`webinar-detail__status ${status.className}`}>{status.label}</span>}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div class="webinar-detail__body">
+            {webinar.webinar_news_body ? (
+              <div class="webinar-detail__body-content" set:html={webinar.webinar_news_body} />
+            ) : (
+              <p>内容はありません。</p>
+            )}
+          </div>
+
+          <div class="webinar-detail__actions">
+            <a class="webinar-detail__apply-link" href="/webinar_form/">申込フォームへ</a>
+            <a class="webinar-detail__back-link" href="/webinar/">ウェビナー一覧へ戻る</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</SiteLayout>

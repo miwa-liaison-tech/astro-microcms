@@ -4,6 +4,8 @@ import "../styles/news-list.css";
 import "../styles/products-list.css";
 import "../styles/news-entry.css";
 import "../styles/webinar.css";
+import "../styles/webinar-list.css";
+import "../styles/webinar-detail.css";
 
 interface Props {
   title: string;
@@ -15,7 +17,7 @@ const currentPath = Astro.url.pathname;
 const navigation = [
   { href: "/", label: "トップ" },
   { href: "/products/", label: "製品一覧" },
-  { href: "https://astro-microcms-7wn.pages.dev/webinar/", label: "ウェビナー" },
+  { href: "/webinar/", label: "ウェビナー" },
   { href: "https://astro-microcms-7wn.pages.dev/webinar_form/", label: "ウェビナー申込" },
 ];
 ---

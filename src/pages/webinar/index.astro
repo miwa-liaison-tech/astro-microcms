@@ -1,0 +1,76 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import { getWebinars } from "../../lib/microcms";
+import { formatDate } from "../../lib/date";
+import {
+  formatApplicationPeriod,
+  getApplicationStatus,
+  getWebinarTitle,
+} from "../../lib/webinar";
+
+const response = await getWebinars();
+const webinars = response.contents;
+---
+
+<SiteLayout title="ウェビナー | テストサイト" description="ウェビナーのお知らせを表示します。">
+  <main>
+    <section class="main-section">
+      <div class="main-section__inner">
+        <div class="webinars">
+          <h1 class="webinars__heading js-furigana">ウェビナー</h1>
+          <p class="webinars__description js-furigana">ウェビナーのお知らせをご案内します。</p>
+          <ul class="webinars__list">
+            {webinars.length > 0 ? webinars.map((item) => {
+              const status = getApplicationStatus(item.start, item.end);
+              const eventDate = formatDate(item.event_day);
+              const period = formatApplicationPeriod(item.start, item.end);
+              return (
+                <li class="webinar-card">
+                  <header class="webinar-card__header">
+                    <h2 class="webinar-card__article-title js-furigana">
+                      <a class="webinar-card__title-link" href={`/webinar/${item.id}/`}>{getWebinarTitle(item)}</a>
+                    </h2>
+                    {item.webinar_title && item.webinar_title !== item.title && (
+                      <p class="webinar-card__name js-furigana">{item.webinar_title}</p>
+                    )}
+                  </header>
+
+                  <div class="webinar-card__schedule">
+                    {eventDate && (
+                      <div class="webinar-card__schedule-row">
+                        <span class="webinar-card__schedule-label">開催日</span>
+                        <time class="webinar-card__date" datetime={item.event_day}>{eventDate}</time>
+                      </div>
+                    )}
+                    {period && (
+                      <div class="webinar-card__schedule-row">
+                        <span class="webinar-card__schedule-label">応募期間</span>
+                        <span class="webinar-card__period">
+                          {period}
+                          {status && <span class={`webinar-card__status ${status.className}`}>{status.label}</span>}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div class="webinar-card__body">
+                    {item.webinar_news_body ? <div class="webinar-card__body-content" set:html={item.webinar_news_body} /> : <p>内容はありません。</p>}
+                  </div>
+
+                  <div class="webinar-card__footer">
+                    <div class="webinar-card__actions">
+                      <a class="webinar-card__link" href={`/webinar/${item.id}/`}>詳細を見る</a>
+                      <a class="webinar-card__link webinar-card__link--secondary" href="/webinar_form/">申込フォームへ</a>
+                    </div>
+                  </div>
+                </li>
+              );
+            }) : (
+              <li class="webinars__empty">ウェビナーのお知らせはありません。</li>
+            )}
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</SiteLayout>
