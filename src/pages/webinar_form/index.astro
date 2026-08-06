@@ -48,7 +48,7 @@ const webinarOptions = webinarResponse.contents.reduce<Array<{ id: string; title
             </div>
             <button class="webinar__submit" type="submit">送信</button>
           </form>
-          <p id="message" class="webinar__message" aria-live="polite"></p>
+          <p id="message" class="webinar__message" role="status" aria-live="polite" tabindex="-1"></p>
         </div>
       </div>
     </section>
@@ -80,8 +80,11 @@ const webinarOptions = webinarResponse.contents.reduce<Array<{ id: string; title
       });
       const result = await res.json();
       if (result.success) {
-        message.textContent = "送信しました";
+        message.textContent = "送信完了しました。情報をmicroCMSに送信しました。";
+        message.classList.add("webinar__message--success");
         form.reset();
+        form.hidden = true;
+        message.focus();
       } else {
         message.textContent = `送信に失敗しました：${result.error || ""}`;
       }

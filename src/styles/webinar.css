@@ -69,6 +69,17 @@
   text-align: center;
 }
 
+.webinar__message--success {
+  margin-block-start: 2.4rem;
+  padding: 2rem;
+  border: 1px solid #9ed8b3;
+  border-radius: 0.6rem;
+  color: #147a3d;
+  background: #eaf8ef;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
 @media screen and (max-width: 768px) {
   .webinar {
     padding: calc(var(--vw) * 40) calc(var(--vw) * 16) calc(var(--vw) * 60);
