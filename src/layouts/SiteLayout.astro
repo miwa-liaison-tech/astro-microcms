@@ -1,5 +1,6 @@
 ---
 import "../styles/theme.css";
+import "../styles/home.css";
 import "../styles/news-list.css";
 import "../styles/products-list.css";
 import "../styles/news-entry.css";
@@ -16,6 +17,7 @@ const { title, description = "microCMSとAstroで構築したテストサイト�
 const currentPath = Astro.url.pathname;
 const navigation = [
   { href: "/", label: "トップ" },
+  { href: "/news/", label: "ニュース" },
   { href: "/products/", label: "製品一覧" },
   { href: "/webinar/", label: "ウェビナー" },
   { href: "https://astro-microcms-7wn.pages.dev/webinar_form/", label: "ウェビナー申込" },

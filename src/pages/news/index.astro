@@ -1,0 +1,55 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import { getFieldText, getNews, type News } from "../../lib/microcms";
+import { formatDate } from "../../lib/date";
+
+const response = await getNews({ orders: "-publishedAt" });
+const newsItems = response.contents;
+
+function dateValue(item: News) {
+  return item.publishedAt ?? item.createdAt ?? "";
+}
+
+function categoryClass(category: string) {
+  switch (category) {
+    case "イベント":
+      return "news__category--event";
+    case "メンテナンス":
+      return "news__category--maintenance";
+    default:
+      return "news__category--info";
+  }
+}
+---
+
+<SiteLayout title="ニュース | テストサイト" description="microCMSから取得したニュースを表示します。">
+  <main>
+    <section class="main-section">
+      <div class="main-section__inner">
+        <div class="news">
+          <h1 class="news__heading">ニュース</h1>
+          <p class="news__description js-furigana">ニュースの一覧です。</p>
+          <ul class="news__list">
+            {newsItems.length > 0 ? newsItems.map((item) => {
+              const publishedAt = dateValue(item);
+              const category = getFieldText(item.category);
+              return (
+                <li class="news__item">
+                  <a class="news__card" href={`/news/${item.id}/`}>
+                    <div class="news__card-meta">
+                      <time class="news__date" datetime={publishedAt}>{formatDate(publishedAt)}</time>
+                      {category && <span class={`news__category ${categoryClass(category)}`}>{category}</span>}
+                    </div>
+                    <p class="news__title js-furigana">{item.title || item.id}</p>
+                  </a>
+                </li>
+              );
+            }) : (
+              <li class="news__empty">ニュースはありません。</li>
+            )}
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</SiteLayout>

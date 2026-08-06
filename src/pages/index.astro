@@ -1,10 +1,19 @@
 ---
 import SiteLayout from "../layouts/SiteLayout.astro";
-import { getFieldText, getNews, type News } from "../lib/microcms";
+import { getFieldText, getNews, getWebinars, type News } from "../lib/microcms";
 import { formatDate } from "../lib/date";
+import {
+  formatApplicationPeriod,
+  getApplicationStatus,
+  getWebinarTitle,
+} from "../lib/webinar";
 
-const response = await getNews();
-const newsItems = response.contents;
+const [newsResponse, webinarResponse] = await Promise.all([
+  getNews({ limit: 3, orders: "-publishedAt" }),
+  getWebinars({ limit: 3, orders: "-event_day" }),
+]);
+const newsItems = newsResponse.contents;
+const webinars = webinarResponse.contents;
 
 function dateValue(item: News) {
   return item.publishedAt ?? item.createdAt ?? "";
@@ -22,32 +31,93 @@ function categoryClass(category: string) {
 }
 ---
 
-<SiteLayout title="ニュース | テストサイト" description="microCMSから取得したニュースを表示します。">
+<SiteLayout title="トップ | テストサイト" description="ニュースとウェビナーのお知らせを表示します。">
   <main>
-    <section class="main-section">
-      <div class="main-section__inner">
-        <div class="news">
-          <h1 class="news__heading">ニュース</h1>
-          <p class="news__description js-furigana">microCMSで入力した記事を表示させることができます。</p>
-          <ul class="news__list">
-            {newsItems.length > 0 ? newsItems.map((item) => {
-              const publishedAt = dateValue(item);
-              const category = getFieldText(item.category);
-              return (
-                <li class="news__item">
-                  <a class="news__card" href={`/news/${item.id}/`}>
-                    <div class="news__card-meta">
-                      <time class="news__date" datetime={publishedAt}>{formatDate(publishedAt)}</time>
-                      {category && <span class={`news__category ${categoryClass(category)}`}>{category}</span>}
+    <section class="home-section">
+      <div class="home-section__inner">
+        <div class="home-section__block">
+          <div class="news home-section__content">
+            <h1 class="news__heading">ニュース</h1>
+            <p class="news__description js-furigana">ニュースのお知らせを表示します。</p>
+            <ul class="news__list">
+              {newsItems.length > 0 ? newsItems.map((item) => {
+                const publishedAt = dateValue(item);
+                const category = getFieldText(item.category);
+                return (
+                  <li class="news__item">
+                    <a class="news__card" href={`/news/${item.id}/`}>
+                      <div class="news__card-meta">
+                        <time class="news__date" datetime={publishedAt}>{formatDate(publishedAt)}</time>
+                        {category && <span class={`news__category ${categoryClass(category)}`}>{category}</span>}
+                      </div>
+                      <p class="news__title js-furigana">{item.title || item.id}</p>
+                    </a>
+                  </li>
+                );
+              }) : (
+                <li class="news__empty">ニュースはありません。</li>
+              )}
+            </ul>
+            <div class="home-section__more">
+              <a class="home-section__more-link" href="/news/">ニュース一覧へ</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="home-section__block">
+          <div class="webinars home-section__content">
+            <h2 class="webinars__heading js-furigana">ウェビナー</h2>
+            <p class="webinars__description js-furigana">ウェビナーのお知らせを表示します。</p>
+            <ul class="webinars__list">
+              {webinars.length > 0 ? webinars.map((item) => {
+                const status = getApplicationStatus(item.start, item.end);
+                const eventDate = formatDate(item.event_day);
+                const period = formatApplicationPeriod(item.start, item.end);
+                return (
+                  <li class="webinar-card">
+                    <header class="webinar-card__header">
+                      <h3 class="webinar-card__article-title js-furigana">
+                        <a class="webinar-card__title-link" href={`/webinar/${item.id}/`}>{getWebinarTitle(item)}</a>
+                      </h3>
+                      {item.webinar_title && item.webinar_title !== item.title && (
+                        <p class="webinar-card__name js-furigana">{item.webinar_title}</p>
+                      )}
+                    </header>
+
+                    <div class="webinar-card__schedule">
+                      {eventDate && (
+                        <div class="webinar-card__schedule-row">
+                          <span class="webinar-card__schedule-label">開催日</span>
+                          <time class="webinar-card__date" datetime={item.event_day}>{eventDate}</time>
+                        </div>
+                      )}
+                      {period && (
+                        <div class="webinar-card__schedule-row">
+                          <span class="webinar-card__schedule-label">応募期間</span>
+                          <span class="webinar-card__period">
+                            {period}
+                            {status && <span class={`webinar-card__status ${status.className}`}>{status.label}</span>}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                    <p class="news__title js-furigana">{item.title || item.id}</p>
-                  </a>
-                </li>
-              );
-            }) : (
-              <li class="news__empty">ニュースはありません。</li>
-            )}
-          </ul>
+
+                    <div class="webinar-card__footer">
+                      <div class="webinar-card__actions">
+                        <a class="webinar-card__link" href={`/webinar/${item.id}/`}>詳細を見る</a>
+                        <a class="webinar-card__link webinar-card__link--secondary" href="/webinar_form/">申込フォームへ</a>
+                      </div>
+                    </div>
+                  </li>
+                );
+              }) : (
+                <li class="webinars__empty">ウェビナーのお知らせはありません。</li>
+              )}
+            </ul>
+            <div class="home-section__more">
+              <a class="home-section__more-link" href="/webinar/">ウェビナー一覧へ</a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
