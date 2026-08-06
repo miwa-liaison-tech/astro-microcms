@@ -38,7 +38,7 @@ function categoryClass(category: string) {
         <div class="home-section__block">
           <div class="news home-section__content">
             <h1 class="news__heading">ニュース</h1>
-            <p class="news__description js-furigana">ニュースのお知らせを表示します。</p>
+            <p class="news__description js-furigana">microCMSで入力した記事を表示させることができます。</p>
             <ul class="news__list">
               {newsItems.length > 0 ? newsItems.map((item) => {
                 const publishedAt = dateValue(item);
@@ -67,7 +67,7 @@ function categoryClass(category: string) {
         <div class="home-section__block">
           <div class="webinars home-section__content">
             <h2 class="webinars__heading js-furigana">ウェビナー</h2>
-            <p class="webinars__description js-furigana">ウェビナーのお知らせを表示します。</p>
+            <p class="webinars__description js-furigana">microCMSで入力したウェビナー情報を表示させることができます。<br>フォームと連携しており、フォームのセレクトボックスに、追加したウェビナーが自動で表示されます。</p>
             <ul class="webinars__list">
               {webinars.length > 0 ? webinars.map((item) => {
                 const status = getApplicationStatus(item.start, item.end);
