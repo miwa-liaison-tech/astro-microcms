@@ -3,7 +3,7 @@ export async function onRequestPost(context) {
 
   try {
     const body = await request.json();
-    const { name, company, e_mail, tel, free } = body;
+    const { webinar_title, name, company, e_mail, tel } = body;
 
     const res = await fetch(
       `https://${env.MICROCMS_SERVICE_DOMAIN}.microcms.io/api/v1/webinar_applications`,
@@ -14,11 +14,11 @@ export async function onRequestPost(context) {
           'X-MICROCMS-API-KEY': env.MICROCMS_API_KEY,
         },
         body: JSON.stringify({
+          webinar_title,
           name,
           company,
           e_mail,
           tel,
-          free,
         }),
       }
     );
