@@ -182,7 +182,7 @@ main {
 
 .header__nav-list {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: calc(var(--vw) * 20);
 }
 

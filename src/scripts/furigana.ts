@@ -231,7 +231,9 @@ window.Furigana = Furigana;
 
 function initializeFurigana() {
   void Furigana.applyToElements(
-    document.querySelectorAll(".js-furigana, .header__nav-link, .nav-menu__link, .footer__copyright"),
+    document.querySelectorAll(
+      ".js-furigana, .header__nav-link, .nav-menu__link, .footer__copyright, label, button, .home-section__more-link, .webinar-card__link, .webinar-detail__apply-link, .webinar-detail__back-link, .entry__back-link",
+    ),
   );
   document.querySelectorAll(".entry__body, .webinar-card__body-content, .webinar-detail__body-content").forEach((element) => {
     void Furigana.applyToTextNodes(element);
