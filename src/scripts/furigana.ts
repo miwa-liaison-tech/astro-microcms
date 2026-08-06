@@ -164,7 +164,13 @@ async function applyToElement(element: Element | null, grade: number) {
 }
 
 async function applyToElements(elements: Iterable<Element>, grade: number) {
-  await Promise.all(Array.from(elements, (element) => applyToElement(element, grade)));
+  await Promise.all(
+    Array.from(elements, (element) =>
+      element.children.length > 0
+        ? applyToTextNodes(element, grade)
+        : applyToElement(element, grade),
+    ),
+  );
 }
 
 async function applyToTextNodes(element: Element | null, grade: number) {

@@ -67,8 +67,7 @@ function categoryClass(category: string) {
         <div class="home-section__block">
           <div class="webinars home-section__content">
             <h2 class="webinars__heading js-furigana">ウェビナー</h2>
-            <p class="js-furigana">microCMSで入力したウェビナー情報を表示させることができます。</p>
-            <p class="webinars__description js-furigana">フォームと連携しており、フォームのセレクトボックスに、追加したウェビナーが自動で表示されます。</p>
+            <p class="webinars__description js-furigana">microCMSで入力したウェビナー情報を表示させることができます。<br>フォームと連携しており、フォームのセレクトボックスに、追加したウェビナーが自動で表示されます。</p>
             <ul class="webinars__list">
               {webinars.length > 0 ? webinars.map((item) => {
                 const status = getApplicationStatus(item.start, item.end);
