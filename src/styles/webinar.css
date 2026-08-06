@@ -1,0 +1,80 @@
+.webinar {
+  max-inline-size: 720px;
+  margin: 0 auto;
+  padding: calc(var(--vw) * 50) calc(var(--vw) * 40) calc(var(--vw) * 80);
+}
+
+.webinar__heading {
+  margin-block-end: calc(var(--vw) * 40);
+  color: #4b4b4b;
+  font-size: 3.2rem;
+  text-align: center;
+}
+
+.webinar__form {
+  display: grid;
+  gap: 2rem;
+  padding: clamp(2rem, calc(var(--vw) * 40), 4rem);
+  border: 1px solid #e5e5e5;
+  border-radius: 0.8rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.webinar__field {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.webinar__label {
+  color: #4b4b4b;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.webinar__input,
+.webinar__textarea {
+  inline-size: 100%;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+  background: #fff;
+}
+
+.webinar__textarea {
+  min-block-size: 12rem;
+  resize: vertical;
+}
+
+.webinar__submit {
+  justify-self: center;
+  min-inline-size: 16rem;
+  padding: 1.2rem 2.4rem;
+  border: 1px solid #4b4b4b;
+  border-radius: 0.4rem;
+  color: #fff;
+  background: #4b4b4b;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.webinar__submit:hover {
+  color: #4b4b4b;
+  background: #fff;
+}
+
+.webinar__message {
+  min-block-size: 2.4rem;
+  margin-block-start: 1.6rem;
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .webinar {
+    padding: calc(var(--vw) * 40) calc(var(--vw) * 16) calc(var(--vw) * 60);
+  }
+
+  .webinar__heading {
+    margin-block-end: calc(var(--vw) * 30);
+    font-size: 2.4rem;
+  }
+}

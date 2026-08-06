@@ -1,0 +1,67 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import { getFieldText, getNews, getNewsDetail } from "../../lib/microcms";
+import { formatDate } from "../../lib/date";
+
+export async function getStaticPaths() {
+  const response = await getNews();
+
+  return response.contents.map((item) => ({
+    params: { id: item.id },
+  }));
+}
+
+const id = Astro.params.id;
+const news = id ? await getNewsDetail(id) : null;
+
+if (!news) {
+  throw new Error(`ニュースが見つかりません: ${id ?? "unknown"}`);
+}
+
+const publishedAt = news.publishedAt ?? news.createdAt ?? "";
+const category = getFieldText(news.category);
+
+function categoryClass(value: string) {
+  switch (value) {
+    case "イベント":
+      return "entry__category--event";
+    case "メンテナンス":
+      return "entry__category--maintenance";
+    default:
+      return "entry__category--info";
+  }
+}
+---
+
+<SiteLayout title={`${news.title} | テストサイト`} description={news.title}>
+  <main>
+    <section class="main-section">
+      <div class="main-section__inner">
+        <article class="entry">
+          <nav class="entry__breadcrumb" aria-label="パンくず">
+            <ul class="entry__breadcrumb-list">
+              <li class="entry__breadcrumb-item"><a class="entry__breadcrumb-link" href="/">ホーム</a></li>
+              <li class="entry__breadcrumb-item entry__breadcrumb-item--current js-furigana" aria-current="page">{news.title}</li>
+            </ul>
+          </nav>
+
+          <header class="entry__header">
+            <div class="entry__meta">
+              <time class="entry__date" datetime={publishedAt}>{formatDate(publishedAt)}</time>
+              {category && <span class={`entry__category ${categoryClass(category)}`}>{category}</span>}
+            </div>
+            <h1 class="entry__title js-furigana">{news.title}</h1>
+          </header>
+
+          <div class="entry__body">
+            {news.body ? <div set:html={news.body} /> : <p>本文はありません。</p>}
+          </div>
+
+          <div class="entry__back">
+            <a class="entry__back-link" href="/">トップページへ戻る</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</SiteLayout>

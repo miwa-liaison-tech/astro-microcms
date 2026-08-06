@@ -1,62 +1,75 @@
-<html lang="ja">
-	<head>
-		<meta charset="utf-8" />
-		<title>ウェビナー応募</title>
-	</head>
-	<body>
-		<h1>ウェビナー応募フォーム</h1>
-		<form id="apply-form">
-			<p>
-				<label>氏名：<input type="text" name="name" required /></label>
-			</p>
-			<p>
-				<label>会社名：<input type="text" name="company" required /></label>
-			</p>
-			<p>
-				<label>メールアドレス：<input type="email" name="e_mail" required /></label>
-			</p>
-			<p>
-				<label>電話番号：<input type="tel" name="tel" /></label>
-			</p>
-			<p>
-				<label>お問い合わせ内容：<textarea name="free"></textarea></label>
-			</p>
-			<button type="submit">送信</button>
-		</form>
-		<p id="message"></p>
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+---
 
-		<script is:inline>
-			const form = document.getElementById('apply-form');
-			const message = document.getElementById('message');
+<SiteLayout title="ウェビナー応募 | テストサイト" description="ウェビナーへの応募フォームです。">
+  <main>
+    <section class="main-section">
+      <div class="main-section__inner">
+        <div class="webinar">
+          <h1 class="webinar__heading js-furigana">ウェビナー応募フォーム</h1>
+          <form id="apply-form" class="webinar__form">
+            <div class="webinar__field">
+              <label class="webinar__label" for="name">氏名</label>
+              <input class="webinar__input" id="name" type="text" name="name" autocomplete="name" required />
+            </div>
+            <div class="webinar__field">
+              <label class="webinar__label" for="company">会社名</label>
+              <input class="webinar__input" id="company" type="text" name="company" autocomplete="organization" required />
+            </div>
+            <div class="webinar__field">
+              <label class="webinar__label" for="e_mail">メールアドレス</label>
+              <input class="webinar__input" id="e_mail" type="email" name="e_mail" autocomplete="email" required />
+            </div>
+            <div class="webinar__field">
+              <label class="webinar__label" for="tel">電話番号</label>
+              <input class="webinar__input" id="tel" type="tel" name="tel" autocomplete="tel" />
+            </div>
+            <div class="webinar__field">
+              <label class="webinar__label" for="free">お問い合わせ内容</label>
+              <textarea class="webinar__textarea" id="free" name="free"></textarea>
+            </div>
+            <button class="webinar__submit" type="submit">送信</button>
+          </form>
+          <p id="message" class="webinar__message" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+</SiteLayout>
 
-			form.addEventListener('submit', async (event) => {
-				event.preventDefault();
-				const formData = new FormData(form);
-				const data = {
-					name: formData.get('name'),
-					company: formData.get('company'),
-					e_mail: formData.get('e_mail'),
-					tel: formData.get('tel'),
-					free: formData.get('free'),
-				};
+<script>
+  const form = document.getElementById("apply-form");
+  const message = document.getElementById("message");
 
-				try {
-					const res = await fetch('/api/apply', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify(data),
-					});
-					const result = await res.json();
-					if (result.success) {
-						message.textContent = '送信しました';
-						form.reset();
-					} else {
-						message.textContent = '送信に失敗しました：' + (result.error || '');
-					}
-				} catch (err) {
-					message.textContent = 'エラーが発生しました';
-				}
-			});
-		</script>
-	</body>
-</html>
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form || !message) return;
+
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get("name"),
+      company: formData.get("company"),
+      e_mail: formData.get("e_mail"),
+      tel: formData.get("tel"),
+      free: formData.get("free"),
+    };
+
+    try {
+      const res = await fetch("/api/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if (result.success) {
+        message.textContent = "送信しました";
+        form.reset();
+      } else {
+        message.textContent = `送信に失敗しました：${result.error || ""}`;
+      }
+    } catch {
+      message.textContent = "エラーが発生しました";
+    }
+  });
+</script>

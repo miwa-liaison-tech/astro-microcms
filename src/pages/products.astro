@@ -1,0 +1,45 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getFieldText, getProducts } from "../lib/microcms";
+
+const response = await getProducts();
+const products = response.contents;
+---
+
+<SiteLayout title="製品一覧 | テストサイト" description="microCMSから取得した製品一覧を表示します。">
+  <main>
+    <section class="main-section">
+      <div class="main-section__inner">
+        <div class="products">
+          <h1 class="products__heading js-furigana">製品一覧</h1>
+          <p class="products__description js-furigana">microCMSで管理している製品情報を表示させることができます。</p>
+          <ul class="products__list">
+            {products.length > 0 ? products.map((item) => {
+              const manufacturer = getFieldText(item.manufacturer);
+              const category = getFieldText(item.products_category);
+              const number = item.number === null || item.number === undefined ? "" : String(item.number);
+              return (
+                <li class="products__item">
+                  <div class="products__card">
+                    {(manufacturer || category) && (
+                      <div class="products__card-meta">
+                        {manufacturer && <span class="products__manufacturer js-furigana">{manufacturer}</span>}
+                        {category && <span class="products__category js-furigana">{category}</span>}
+                      </div>
+                    )}
+                    <div class="products__card-body">
+                      <p class="products__product js-furigana">{item.product || item.id}</p>
+                      <p class="products__number">在庫:{number || "-"}<span class="products__number-unit">個</span></p>
+                    </div>
+                  </div>
+                </li>
+              );
+            }) : (
+              <li class="products__empty">製品情報はありません。</li>
+            )}
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</SiteLayout>
